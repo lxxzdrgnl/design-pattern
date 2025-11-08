@@ -68,7 +68,30 @@ class PriceAlert implements Observer {
 }</code></pre>
       </div>
 
-      <button @click="testStockObserver" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <div class="form-group">
+          <label for="stock-price">주식 가격:</label>
+          <input
+            id="stock-price"
+            v-model.number="stockPrice"
+            type="number"
+            class="input-field"
+            placeholder="예: 15000"
+          />
+        </div>
+        <div class="form-group">
+          <label for="alert-threshold">알림 목표가:</label>
+          <input
+            id="alert-threshold"
+            v-model.number="alertThreshold"
+            type="number"
+            class="input-field"
+            placeholder="예: 20000"
+          />
+        </div>
+        <button @click="updateStockPrice" class="test-btn">가격 변경</button>
+      </div>
+
       <div v-if="stockResult" class="result">
         <h3>실행 결과</h3>
         <pre>{{ stockResult }}</pre>
@@ -127,7 +150,30 @@ class StatisticsDisplay implements Observer {
 }</code></pre>
       </div>
 
-      <button @click="testWeatherObserver" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <div class="form-group">
+          <label for="temperature">온도 (°C):</label>
+          <input
+            id="temperature"
+            v-model.number="temperature"
+            type="number"
+            class="input-field"
+            placeholder="예: 25"
+          />
+        </div>
+        <div class="form-group">
+          <label for="humidity">습도 (%):</label>
+          <input
+            id="humidity"
+            v-model.number="humidity"
+            type="number"
+            class="input-field"
+            placeholder="예: 65"
+          />
+        </div>
+        <button @click="updateWeatherData" class="test-btn">날씨 업데이트</button>
+      </div>
+
       <div v-if="weatherResult" class="result">
         <h3>실행 결과</h3>
         <pre>{{ weatherResult }}</pre>
@@ -181,7 +227,30 @@ emitter.on('userLogin', (username: string) => {
 emitter.emit('userLogin', 'John')</code></pre>
       </div>
 
-      <button @click="testEventSystem" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <div class="form-group">
+          <label for="event-name">이벤트 이름:</label>
+          <input
+            id="event-name"
+            v-model="eventName"
+            type="text"
+            class="input-field"
+            placeholder="예: userLogin"
+          />
+        </div>
+        <div class="form-group">
+          <label for="event-data">이벤트 데이터:</label>
+          <input
+            id="event-data"
+            v-model="eventData"
+            type="text"
+            class="input-field"
+            placeholder="예: John"
+          />
+        </div>
+        <button @click="emitEvent" class="test-btn">이벤트 발생</button>
+      </div>
+
       <div v-if="eventResult" class="result">
         <h3>실행 결과</h3>
         <pre>{{ eventResult }}</pre>
@@ -241,7 +310,30 @@ class User implements Subscriber {
 }</code></pre>
       </div>
 
-      <button @click="testYouTubeObserver" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <div class="form-group">
+          <label for="channel-name">채널 이름:</label>
+          <input
+            id="channel-name"
+            v-model="channelName"
+            type="text"
+            class="input-field"
+            placeholder="예: 코딩 채널"
+          />
+        </div>
+        <div class="form-group">
+          <label for="video-title">동영상 제목:</label>
+          <input
+            id="video-title"
+            v-model="videoTitle"
+            type="text"
+            class="input-field"
+            placeholder="예: TypeScript 기초 강좌"
+          />
+        </div>
+        <button @click="uploadYouTubeVideo" class="test-btn">동영상 업로드</button>
+      </div>
+
       <div v-if="youtubeResult" class="result">
         <h3>실행 결과</h3>
         <pre>{{ youtubeResult }}</pre>
@@ -296,6 +388,30 @@ const stockResult = ref<string>('')
 const weatherResult = ref<string>('')
 const eventResult = ref<string>('')
 const youtubeResult = ref<string>('')
+
+// Interactive variables
+const stockPrice = ref<number>(15000)
+const alertThreshold = ref<number>(20000)
+const temperature = ref<number>(25)
+const humidity = ref<number>(65)
+const eventName = ref<string>('userLogin')
+const eventData = ref<string>('John')
+const channelName = ref<string>('코딩 채널')
+const videoTitle = ref<string>('TypeScript 기초 강좌')
+
+// Persistent objects for interactive mode
+let persistentStock: Stock | null = null
+let persistentDisplay: PriceDisplay | null = null
+let persistentAlert: PriceAlert | null = null
+
+let persistentWeatherStation: WeatherStation | null = null
+let persistentCurrentDisplay: CurrentConditionsDisplay | null = null
+let persistentStatsDisplay: StatisticsDisplay | null = null
+
+let persistentEmitter: EventEmitter | null = null
+
+let persistentChannel: YouTubeChannel | null = null
+let persistentUsers: User[] = []
 
 // ============ A. Stock Price Observer ============
 
@@ -364,6 +480,46 @@ class PriceAlert implements StockObserver {
   getLogs(): string[] {
     return this.logs
   }
+}
+
+// Interactive function for Stock Observer
+function updateStockPrice() {
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = stockResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
+  // Initialize observers on first run
+  if (!persistentStock) {
+    persistentStock = new Stock()
+    persistentDisplay = new PriceDisplay()
+    persistentAlert = new PriceAlert(alertThreshold.value)
+
+    persistentStock.attach(persistentDisplay)
+    persistentStock.attach(persistentAlert)
+  }
+
+  // Update threshold if changed
+  if (persistentAlert && persistentAlert instanceof PriceAlert) {
+    persistentAlert = new PriceAlert(alertThreshold.value)
+    persistentStock.detach(persistentAlert)
+    persistentStock.attach(persistentAlert)
+  }
+
+  // Set new price
+  persistentStock.setPrice(stockPrice.value)
+
+  const displayLogs = persistentDisplay!.getLogs()
+  const alertLogs = persistentAlert!.getLogs()
+  const lastDisplay = displayLogs[displayLogs.length - 1] || '(알림 없음)'
+  const lastAlert = alertLogs[alertLogs.length - 1] || '(목표가 미도달)'
+
+  stockResult.value = separator + `[${timestamp}]
+주식 가격 변경: ${stockPrice.value}원
+
+${lastDisplay}
+${lastAlert}
+
+✅ 모든 옵저버가 자동으로 알림을 받았습니다
+💡 Observer 패턴: Subject의 상태 변경 시 등록된 모든 Observer에게 자동 알림`
 }
 
 function testStockObserver() {
@@ -466,6 +622,39 @@ class StatisticsDisplay implements WeatherObserver {
   }
 }
 
+// Interactive function for Weather Station
+function updateWeatherData() {
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = weatherResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
+  // Initialize on first run
+  if (!persistentWeatherStation) {
+    persistentWeatherStation = new WeatherStation()
+    persistentCurrentDisplay = new CurrentConditionsDisplay()
+    persistentStatsDisplay = new StatisticsDisplay()
+
+    persistentWeatherStation.attach(persistentCurrentDisplay)
+    persistentWeatherStation.attach(persistentStatsDisplay)
+  }
+
+  // Update measurements
+  persistentWeatherStation.setMeasurements(temperature.value, humidity.value)
+
+  const currentLogs = persistentCurrentDisplay!.getLogs()
+  const statsLogs = persistentStatsDisplay!.getLogs()
+  const lastCurrent = currentLogs[currentLogs.length - 1] || '(데이터 없음)'
+  const lastStats = statsLogs[statsLogs.length - 1] || '(통계 없음)'
+
+  weatherResult.value = separator + `[${timestamp}]
+날씨 데이터 업데이트: ${temperature.value}°C, ${humidity.value}%
+
+${lastCurrent}
+${lastStats}
+
+✅ 모든 디스플레이가 동시에 업데이트되었습니다
+💡 Observer 패턴: 하나의 데이터 변경으로 여러 옵저버가 자동 갱신`
+}
+
 function testWeatherObserver() {
   const station = new WeatherStation()
   const currentDisplay = new CurrentConditionsDisplay()
@@ -523,6 +712,56 @@ class EventEmitter {
       callbacks.forEach(callback => callback(...args))
     }
   }
+}
+
+// Interactive function for Event System
+function emitEvent() {
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = eventResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
+  const logs: string[] = []
+
+  // Initialize emitter on first run
+  if (!persistentEmitter) {
+    persistentEmitter = new EventEmitter()
+
+    // Register listeners
+    persistentEmitter.on('userLogin', (username: string) => {
+      logs.push(`[이벤트] ${username}님이 로그인했습니다`)
+    })
+
+    persistentEmitter.on('userLogin', (username: string) => {
+      logs.push(`[분석] 로그인 이벤트 기록: ${username}`)
+    })
+
+    persistentEmitter.on('userLogin', (username: string) => {
+      logs.push(`[환영] ${username}님 환영합니다!`)
+    })
+
+    persistentEmitter.on('userLogout', (username: string) => {
+      logs.push(`[이벤트] ${username}님이 로그아웃했습니다`)
+    })
+
+    persistentEmitter.on('dataUpdate', (data: string) => {
+      logs.push(`[데이터] 업데이트: ${data}`)
+    })
+  }
+
+  // Clear logs array for this emission
+  logs.length = 0
+
+  // Emit the event
+  persistentEmitter.emit(eventName.value, eventData.value)
+
+  const result = logs.length > 0 ? logs.join('\n') : `(이벤트 "${eventName.value}"에 등록된 리스너가 없습니다)`
+
+  eventResult.value = separator + `[${timestamp}]
+이벤트 발생: emit("${eventName.value}", "${eventData.value}")
+
+${result}
+
+✅ 한 번의 emit으로 모든 리스너가 실행되었습니다
+💡 Observer 패턴 (Pub/Sub): 이벤트 기반 비동기 처리에 최적화`
 }
 
 function testEventSystem() {
@@ -620,6 +859,57 @@ class User implements Subscriber {
   getName(): string {
     return this.name
   }
+}
+
+// Interactive function for YouTube Channel
+function uploadYouTubeVideo() {
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = youtubeResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
+  // Initialize channel and users on first run
+  if (!persistentChannel) {
+    persistentChannel = new YouTubeChannel(channelName.value)
+    persistentUsers = [
+      new User('철수'),
+      new User('영희'),
+      new User('민수')
+    ]
+
+    persistentUsers.forEach(user => persistentChannel!.subscribe(user))
+  }
+
+  // Update channel name if changed
+  if (persistentChannel && persistentChannel instanceof YouTubeChannel) {
+    // Create new channel with updated name if it changed
+    const currentName = channelName.value
+    persistentChannel = new YouTubeChannel(currentName)
+    persistentUsers.forEach(user => persistentChannel!.subscribe(user))
+  }
+
+  // Upload video
+  const uploadLogs = persistentChannel.uploadVideo(videoTitle.value)
+
+  const logs: string[] = []
+  logs.push(`채널: ${channelName.value}`)
+  logs.push(`구독자: ${persistentChannel.getSubscriberCount()}명`)
+  logs.push('')
+  logs.push(...uploadLogs)
+  logs.push('')
+  logs.push('=== 구독자 알림 ===')
+
+  persistentUsers.forEach(user => {
+    const userNotifications = user.getNotifications()
+    const lastNotification = userNotifications[userNotifications.length - 1]
+    if (lastNotification) {
+      logs.push(`[${user.getName()}] ${lastNotification}`)
+    }
+  })
+
+  youtubeResult.value = separator + `[${timestamp}]
+${logs.join('\n')}
+
+✅ 모든 구독자가 알림을 받았습니다
+💡 Observer 패턴: 구독 시스템의 핵심 원리`
 }
 
 function testYouTubeObserver() {
