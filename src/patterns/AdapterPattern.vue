@@ -7,7 +7,7 @@
     </p>
 
     <div class="demo-section">
-      <h2>A. Payment Gateway Adapter</h2>
+      <h2>A. Payment Gateway Adapter - 인터랙티브 데모</h2>
       <p>기존 결제 시스템(Target)과 새로운 결제 게이트웨이(Adaptee)를 연결합니다.</p>
 
       <div class="code-block">
@@ -46,7 +46,25 @@ function processPayment(processor: OldPaymentProcessor, amount: number) {
 }</code></pre>
       </div>
 
-      <button @click="testPaymentAdapter" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <h3>💳 결제 금액 입력</h3>
+        <div class="form-group">
+          <label for="payment-amount">결제 금액 (원):</label>
+          <input
+            id="payment-amount"
+            v-model.number="paymentAmount"
+            type="number"
+            placeholder="예: 100000"
+            min="1000"
+            step="1000"
+            class="input-field"
+          />
+        </div>
+        <button @click="testPaymentAdapter" class="test-btn" :disabled="!paymentAmount || paymentAmount < 1000">
+          결제 처리
+        </button>
+      </div>
+
       <div v-if="paymentResult" class="result">
         <h3>🚀 실행 결과</h3>
         <pre>{{ paymentResult }}</pre>
@@ -54,7 +72,7 @@ function processPayment(processor: OldPaymentProcessor, amount: number) {
     </div>
 
     <div class="demo-section">
-      <h2>B. Logger Adapter (레거시 시스템 통합)</h2>
+      <h2>B. Logger Adapter - 인터랙티브 데모</h2>
       <p>오래된 로깅 시스템을 새로운 구조화된 로거로 어댑터를 통해 사용합니다.</p>
 
       <div class="code-block">
@@ -92,7 +110,23 @@ function legacySystemLog(logger: LegacyLogger, msg: string) {
 }</code></pre>
       </div>
 
-      <button @click="testLoggerAdapter" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <h3>📝 로그 메시지 입력</h3>
+        <div class="form-group">
+          <label for="log-message">로그 메시지:</label>
+          <input
+            id="log-message"
+            v-model="logMessage"
+            type="text"
+            placeholder="예: User logged in"
+            class="input-field"
+          />
+        </div>
+        <button @click="testLoggerAdapter" class="test-btn" :disabled="!logMessage">
+          로그 기록
+        </button>
+      </div>
+
       <div v-if="loggerResult" class="result">
         <h3>🚀 실행 결과</h3>
         <pre>{{ loggerResult }}</pre>
@@ -100,7 +134,7 @@ function legacySystemLog(logger: LegacyLogger, msg: string) {
     </div>
 
     <div class="demo-section">
-      <h2>C. API Format Adapter (REST to GraphQL)</h2>
+      <h2>C. API Format Adapter - 인터랙티브 데모</h2>
       <p>REST API 응답을 GraphQL 형식으로 변환하는 어댑터입니다.</p>
 
       <div class="code-block">
@@ -153,7 +187,23 @@ function displayUser(adapter: ApiFormatAdapter, userId: string): GraphQLUserResp
 }</code></pre>
       </div>
 
-      <button @click="testApiAdapter" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <h3>👤 사용자 ID 입력</h3>
+        <div class="form-group">
+          <label for="user-id">User ID:</label>
+          <input
+            id="user-id"
+            v-model="userId"
+            type="text"
+            placeholder="예: user-12345"
+            class="input-field"
+          />
+        </div>
+        <button @click="testApiAdapter" class="test-btn" :disabled="!userId">
+          API 호출 및 변환
+        </button>
+      </div>
+
       <div v-if="apiResult" class="result">
         <h3>🚀 실행 결과</h3>
         <pre>{{ apiResult }}</pre>
@@ -161,7 +211,7 @@ function displayUser(adapter: ApiFormatAdapter, userId: string): GraphQLUserResp
     </div>
 
     <div class="demo-section">
-      <h2>D. File Storage Adapter (다중 클라우드 지원)</h2>
+      <h2>D. File Storage Adapter - 인터랙티브 데모</h2>
       <p>서로 다른 클라우드 저장소(AWS S3, Google Cloud)를 통합 인터페이스로 사용합니다.</p>
 
       <div class="code-block">
@@ -228,7 +278,46 @@ function storeFile(storage: FileStorage, file: string, data: string): string {
 }</code></pre>
       </div>
 
-      <button @click="testStorageAdapter" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <h3>☁️ 파일 업로드 테스트</h3>
+        <div class="form-group">
+          <label for="file-name">파일명:</label>
+          <input
+            id="file-name"
+            v-model="fileName"
+            type="text"
+            placeholder="예: document.pdf"
+            class="input-field"
+          />
+        </div>
+
+        <div class="storage-selection">
+          <label>저장소 선택:</label>
+          <button
+            @click="selectedStorage = 's3'"
+            :class="['storage-btn', { active: selectedStorage === 's3' }]"
+          >
+            AWS S3
+          </button>
+          <button
+            @click="selectedStorage = 'gcs'"
+            :class="['storage-btn', { active: selectedStorage === 'gcs' }]"
+          >
+            Google Cloud Storage
+          </button>
+          <button
+            @click="selectedStorage = 'both'"
+            :class="['storage-btn', { active: selectedStorage === 'both' }]"
+          >
+            Both (비교)
+          </button>
+        </div>
+
+        <button @click="testStorageAdapter" class="test-btn" :disabled="!fileName || !selectedStorage">
+          파일 업로드/다운로드
+        </button>
+      </div>
+
       <div v-if="storageResult" class="result">
         <h3>🚀 실행 결과</h3>
         <pre>{{ storageResult }}</pre>
@@ -284,6 +373,12 @@ class SoapToRestAdapter implements RestApi {
 <script setup lang="ts">
 import { ref } from 'vue'
 
+const paymentAmount = ref<number | null>(null)
+const logMessage = ref<string>('')
+const userId = ref<string>('')
+const fileName = ref<string>('')
+const selectedStorage = ref<'s3' | 'gcs' | 'both' | null>(null)
+
 const paymentResult = ref<string>('')
 const loggerResult = ref<string>('')
 const apiResult = ref<string>('')
@@ -319,13 +414,19 @@ class PaymentAdapter implements OldPaymentProcessor {
 }
 
 function testPaymentAdapter() {
+  if (!paymentAmount.value) return
+
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = paymentResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
   const newGateway = new NewPaymentGateway()
   const adapter = new PaymentAdapter(newGateway)
 
-  const amount = 100000
+  const amount = paymentAmount.value
+  const fee = newGateway.getTransactionFee(amount)
   const result = adapter.pay(amount)
 
-  paymentResult.value = `💰 결제 테스트\n\n결제 금액: ${amount}원\n\n실행 과정:\n1. PaymentAdapter.pay(${amount}) 호출\n2. NewPaymentGateway.getTransactionFee(${amount}) 호출\n3. NewPaymentGateway.makePayment(${amount}, 'KRW') 호출\n\n결과:\n${result}\n\n✅ 기존 인터페이스(pay)를 유지하면서 새 게이트웨이를 사용했습니다!`
+  paymentResult.value = separator + `[${timestamp}]\n💰 결제 테스트\n\n결제 금액: ${amount.toLocaleString()}원\n\n실행 과정:\n1. PaymentAdapter.pay(${amount}) 호출\n2. NewPaymentGateway.getTransactionFee(${amount}) 호출 → ${fee}원\n3. NewPaymentGateway.makePayment(${amount}, 'KRW') 호출\n\n결과:\n${result}\n\n✅ 기존 인터페이스(pay)를 유지하면서 새 게이트웨이를 사용했습니다!`
 }
 
 // ============ B. Logger Adapter ============
@@ -354,18 +455,17 @@ class LoggerAdapter implements LegacyLogger {
 }
 
 function testLoggerAdapter() {
+  if (!logMessage.value) return
+
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = loggerResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
   const modernLogger = new ModernStructuredLogger()
   const adapter = new LoggerAdapter(modernLogger)
 
-  const messages = [
-    'User logged in',
-    'File uploaded successfully',
-    'Cache cleared'
-  ]
+  const log = adapter.log(logMessage.value)
 
-  const logs = messages.map(msg => adapter.log(msg))
-
-  loggerResult.value = `📝 레거시 로거 통합 테스트\n\n실행 과정:\n레거시 코드는 간단한 log(message)만 호출\nLoggerAdapter가 자동으로 구조화된 로그로 변환\n\n로그 출력:\n\n${logs.join('\n\n')}\n\n✅ 레거시 코드 수정 없이 최신 로깅 시스템을 사용했습니다!`
+  loggerResult.value = separator + `[${timestamp}]\n📝 레거시 로거 통합 테스트\n\n입력 메시지: "${logMessage.value}"\n\n실행 과정:\n1. LegacyLogger.log("${logMessage.value}") 호출\n2. LoggerAdapter가 ModernStructuredLogger로 변환\n3. logWithMetadata(level, message, metadata) 호출\n\n로그 출력:\n${log}\n\n✅ 레거시 코드 수정 없이 최신 로깅 시스템을 사용했습니다!`
 }
 
 // ============ C. API Format Adapter ============
@@ -409,14 +509,18 @@ class ApiFormatAdapter {
 }
 
 function testApiAdapter() {
+  if (!userId.value) return
+
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = apiResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
   const restClient = new RestApiClient()
   const adapter = new ApiFormatAdapter(restClient)
 
-  const userId = 'user-12345'
-  const restData = restClient.fetchUser(userId)
-  const graphqlData = adapter.getUserData(userId)
+  const restData = restClient.fetchUser(userId.value)
+  const graphqlData = adapter.getUserData(userId.value)
 
-  apiResult.value = `🔄 API 형식 변환 테스트\n\nREST API 응답:\n${JSON.stringify(restData, null, 2)}\n\nApiFormatAdapter 변환\n\nGraphQL 형식 응답:\n${JSON.stringify(graphqlData, null, 2)}\n\n✅ REST API를 GraphQL 클라이언트에서 사용할 수 있게 되었습니다!`
+  apiResult.value = separator + `[${timestamp}]\n🔄 API 형식 변환 테스트\n\n요청 User ID: ${userId.value}\n\nREST API 응답 (Adaptee):\n${JSON.stringify(restData, null, 2)}\n\n⬇️ ApiFormatAdapter 변환 ⬇️\n\nGraphQL 형식 응답 (Target):\n${JSON.stringify(graphqlData, null, 2)}\n\n✅ REST API를 GraphQL 클라이언트에서 사용할 수 있게 되었습니다!`
 }
 
 // ============ D. File Storage Adapter ============
@@ -473,23 +577,40 @@ class GcsStorageAdapter implements FileStorage {
 }
 
 function testStorageAdapter() {
+  if (!fileName.value || !selectedStorage.value) return
+
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = storageResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
   const s3Client = new AwsS3Client()
   const gcsClient = new GoogleCloudStorage()
 
   const s3Adapter = new S3StorageAdapter(s3Client)
   const gcsAdapter = new GcsStorageAdapter(gcsClient)
 
-  const fileName = 'document.pdf'
   const content = 'File content here...'
 
-  // 같은 인터페이스로 다른 클라우드 사용
-  const s3Upload = s3Adapter.upload(fileName, content)
-  const gcsUpload = gcsAdapter.upload(fileName, content)
+  let resultText = ''
 
-  const s3Download = s3Adapter.download(fileName)
-  const gcsDownload = gcsAdapter.download(fileName)
+  if (selectedStorage.value === 's3') {
+    const upload = s3Adapter.upload(fileName.value, content)
+    const download = s3Adapter.download(fileName.value)
+    resultText = separator + `[${timestamp}]\n☁️ AWS S3 저장소 테스트\n\n파일명: ${fileName.value}\n\n📤 업로드:\n${upload}\n\n📥 다운로드:\n${download}\n\n✅ FileStorage 인터페이스로 S3를 사용했습니다!`
+  } else if (selectedStorage.value === 'gcs') {
+    const upload = gcsAdapter.upload(fileName.value, content)
+    const download = gcsAdapter.download(fileName.value)
+    resultText = separator + `[${timestamp}]\n☁️ Google Cloud Storage 테스트\n\n파일명: ${fileName.value}\n\n📤 업로드:\n${upload}\n\n📥 다운로드:\n${download}\n\n✅ FileStorage 인터페이스로 GCS를 사용했습니다!`
+  } else {
+    // both
+    const s3Upload = s3Adapter.upload(fileName.value, content)
+    const gcsUpload = gcsAdapter.upload(fileName.value, content)
+    const s3Download = s3Adapter.download(fileName.value)
+    const gcsDownload = gcsAdapter.download(fileName.value)
 
-  storageResult.value = `☁️ 다중 클라우드 저장소 통합 테스트\n\n파일명: ${fileName}\n\n📤 업로드 테스트:\nS3: ${s3Upload}\nGCS: ${gcsUpload}\n\n📥 다운로드 테스트:\nS3: ${s3Download}\nGCS: ${gcsDownload}\n\n✅ 동일한 FileStorage 인터페이스로 다른 클라우드를 사용했습니다!\n✅ 코드 변경 없이 저장소를 교체할 수 있습니다!`
+    resultText = separator + `[${timestamp}]\n☁️ 다중 클라우드 저장소 비교 테스트\n\n파일명: ${fileName.value}\n\n📤 업로드 테스트:\nS3: ${s3Upload}\nGCS: ${gcsUpload}\n\n📥 다운로드 테스트:\nS3: ${s3Download}\nGCS: ${gcsDownload}\n\n✅ 동일한 FileStorage 인터페이스로 다른 클라우드를 사용했습니다!\n✅ 코드 변경 없이 저장소를 교체할 수 있습니다!`
+  }
+
+  storageResult.value = resultText
 }
 </script>
 

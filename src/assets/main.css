@@ -147,7 +147,8 @@ header h1 {
 }
 
 .pattern-btn {
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95));
+  color: var(--color-text-dark);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 0.875rem 1.25rem;
@@ -165,7 +166,7 @@ header h1 {
 .pattern-btn:hover:not(.disabled):not(.active) {
   transform: translateY(-3px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 1);
+  background: linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 1));
 }
 
 .pattern-btn.active {
@@ -186,7 +187,7 @@ header h1 {
 .pattern-btn.disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  background: rgba(255, 255, 255, 0.7);
+  background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7));
 }
 
 .pattern-btn .icon {
@@ -930,5 +931,150 @@ h1 {
   .action-selection,
   .fetch-type-selection {
     grid-template-columns: 1fr;
+  }
+}
+
+/* FactoryPattern Styles */
+.os-selection {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0;
+  flex-wrap: wrap;
+}
+
+.os-select-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #64748b;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.os-select-btn:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: #eff6ff;
+}
+
+.os-select-btn.active {
+  border-color: #3b82f6;
+  background: #3b82f6;
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.os-button {
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.windows-button {
+  background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+  color: white;
+}
+
+.windows-button:hover {
+  background: linear-gradient(135deg, #005a9e 0%, #004578 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 120, 212, 0.4);
+}
+
+.mac-button {
+  background: linear-gradient(135deg, #007aff 0%, #0051d5 100%);
+  color: white;
+}
+
+.mac-button:hover {
+  background: linear-gradient(135deg, #0051d5 0%, #003aa0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+}
+
+.linux-button {
+  background: linear-gradient(135deg, #f7941d 0%, #d67e1a 100%);
+  color: white;
+}
+
+.linux-button:hover {
+  background: linear-gradient(135deg, #d67e1a 0%, #b56815 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(247, 148, 29, 0.4);
+}
+
+@media (max-width: 768px) {
+  .os-selection {
+    flex-direction: column;
+  }
+
+  .os-select-btn {
+    min-width: 100%;
+  }
+}
+
+/* AdapterPattern Styles */
+.storage-selection {
+  margin: 16px 0;
+}
+
+.storage-selection label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.storage-selection {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.storage-btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.storage-btn:hover {
+  border-color: #10b981;
+  color: #10b981;
+  background: #f0fdf4;
+}
+
+.storage-btn.active {
+  border-color: #10b981;
+  background: #10b981;
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+@media (max-width: 768px) {
+  .storage-selection {
+    flex-direction: column;
+  }
+
+  .storage-btn {
+    min-width: 100%;
   }
 }

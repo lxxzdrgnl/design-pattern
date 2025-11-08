@@ -7,7 +7,7 @@
     </p>
 
     <div class="demo-section">
-      <h2>전체 패턴 구조</h2>
+      <h2>전체 패턴 구조 - 인터랙티브 데모</h2>
       <p>Product 인터페이스와 Creator 추상 클래스를 통해 객체 생성을 캡슐화합니다.</p>
 
       <div class="code-block">
@@ -64,9 +64,38 @@ class MacDialog extends Dialog {
 }</code></pre>
       </div>
 
-      <button @click="showStructure" class="test-btn">패턴 구조 확인</button>
+      <div class="interactive-demo">
+        <h3>🎮 OS 선택 인터랙티브 데모</h3>
+        <p>원하는 OS를 선택하면 해당 OS에 맞는 Dialog와 Button이 자동으로 생성됩니다.</p>
+
+        <div class="os-selection">
+          <button
+            @click="selectedOS = 'Windows'"
+            :class="['os-select-btn', { active: selectedOS === 'Windows' }]"
+          >
+            Windows
+          </button>
+          <button
+            @click="selectedOS = 'Mac'"
+            :class="['os-select-btn', { active: selectedOS === 'Mac' }]"
+          >
+            Mac
+          </button>
+          <button
+            @click="selectedOS = 'Linux'"
+            :class="['os-select-btn', { active: selectedOS === 'Linux' }]"
+          >
+            Linux
+          </button>
+        </div>
+
+        <button @click="createDialogForOS" class="test-btn" :disabled="!selectedOS">
+          선택한 OS의 Dialog 생성
+        </button>
+      </div>
+
       <div v-if="structureResult" class="result">
-        <h3>🚀 패턴 구조 설명</h3>
+        <h3>🚀 실행 결과</h3>
         <pre>{{ structureResult }}</pre>
       </div>
     </div>
@@ -213,6 +242,7 @@ dialog.renderDialog()</code></pre>
 <script setup lang="ts">
 import { ref } from 'vue'
 
+const selectedOS = ref<'Windows' | 'Mac' | 'Linux' | null>(null)
 const structureResult = ref<string>('')
 const windowsResult = ref<string>('')
 const macResult = ref<string>('')
@@ -310,6 +340,22 @@ function clientApp(osType: 'Windows' | 'Mac' | 'Linux'): string[] {
   return dialog.renderDialog()
 }
 
+function createDialogForOS() {
+  if (!selectedOS.value) return
+
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = structureResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
+  let logs: string[] = []
+  logs.push(`[${timestamp}]`)
+  logs.push(`선택된 OS: ${selectedOS.value}`)
+  logs.push(``)
+
+  const clientLogs = clientApp(selectedOS.value)
+
+  structureResult.value = separator + logs.join('\n') + '\n' + clientLogs.join('\n')
+}
+
 function showStructure() {
   structureResult.value = `패턴 구조 설명:
 
@@ -334,40 +380,52 @@ function showStructure() {
 }
 
 function runWindowsDialog() {
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = windowsResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
   const logs = clientApp('Windows')
-  windowsResult.value = `클라이언트: clientApp("Windows") 호출\n\n` + logs.join('\n')
+  windowsResult.value = separator + `[${timestamp}]\n클라이언트: clientApp("Windows") 호출\n\n` + logs.join('\n')
 
   const button = new WindowsButton()
   windowsButton.value = {
     label: 'Windows Button',
     onClick: () => {
-      windowsResult.value += `\n\n🎨 버튼 클릭: ${button.onClick()}`
+      const clickTimestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+      windowsResult.value += `\n\n[${clickTimestamp}]\n🎨 버튼 클릭: ${button.onClick()}`
     },
   }
 }
 
 function runMacDialog() {
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = macResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
   const logs = clientApp('Mac')
-  macResult.value = `클라이언트: clientApp("Mac") 호출\n\n` + logs.join('\n')
+  macResult.value = separator + `[${timestamp}]\n클라이언트: clientApp("Mac") 호출\n\n` + logs.join('\n')
 
   const button = new MacButton()
   macButton.value = {
     label: 'Mac Button',
     onClick: () => {
-      macResult.value += `\n\n🎨 버튼 클릭: ${button.onClick()}`
+      const clickTimestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+      macResult.value += `\n\n[${clickTimestamp}]\n🎨 버튼 클릭: ${button.onClick()}`
     },
   }
 }
 
 function runLinuxDialog() {
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = linuxResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
   const logs = clientApp('Linux')
-  linuxResult.value = `클라이언트: clientApp("Linux") 호출\n\n✨ 새로운 제품이 추가되었지만 기존 코드는 수정되지 않았습니다!\n\n` + logs.join('\n')
+  linuxResult.value = separator + `[${timestamp}]\n클라이언트: clientApp("Linux") 호출\n\n✨ 새로운 제품이 추가되었지만 기존 코드는 수정되지 않았습니다!\n\n` + logs.join('\n')
 
   const button = new LinuxButton()
   linuxButton.value = {
     label: 'Linux Button',
     onClick: () => {
-      linuxResult.value += `\n\n🎨 버튼 클릭: ${button.onClick()}`
+      const clickTimestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+      linuxResult.value += `\n\n[${clickTimestamp}]\n🎨 버튼 클릭: ${button.onClick()}`
     },
   }
 }
