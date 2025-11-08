@@ -1078,3 +1078,60 @@ h1 {
     min-width: 100%;
   }
 }
+
+/* DecoratorPattern Styles */
+.decorator-selection {
+  margin: 16px 0;
+}
+
+.decorator-selection label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #334155;
+  font-size: 15px;
+}
+
+.decorator-selection {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.decorator-btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.decorator-btn:hover {
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+  background: #faf5ff;
+}
+
+.decorator-btn.active {
+  border-color: #8b5cf6;
+  background: #8b5cf6;
+  color: white;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+@media (max-width: 768px) {
+  .decorator-selection {
+    flex-direction: column;
+  }
+
+  .decorator-btn {
+    min-width: 100%;
+  }
+}

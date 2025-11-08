@@ -55,9 +55,49 @@ class SlackNotifier extends NotifierDecorator {
 }</code></pre>
       </div>
 
-      <button @click="testNotifierDecorator" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <h3>📢 알림 채널 선택 및 메시지 전송</h3>
+
+        <div class="form-group">
+          <label for="notifier-message">메시지:</label>
+          <input
+            id="notifier-message"
+            v-model="notifierMessage"
+            type="text"
+            placeholder="예: 긴급 알림: 서버 점검 예정"
+            class="input-field"
+          />
+        </div>
+
+        <div class="decorator-selection">
+          <label>알림 채널 선택 (중복 가능):</label>
+          <button
+            @click="toggleNotifier('email')"
+            :class="['decorator-btn', { active: selectedNotifiers.includes('email') }]"
+          >
+            📧 이메일
+          </button>
+          <button
+            @click="toggleNotifier('sms')"
+            :class="['decorator-btn', { active: selectedNotifiers.includes('sms') }]"
+          >
+            📱 SMS
+          </button>
+          <button
+            @click="toggleNotifier('slack')"
+            :class="['decorator-btn', { active: selectedNotifiers.includes('slack') }]"
+          >
+            💬 Slack
+          </button>
+        </div>
+
+        <button @click="sendNotification" class="test-btn" :disabled="!notifierMessage">
+          알림 전송 (기본 + 선택된 채널)
+        </button>
+      </div>
+
       <div v-if="notifierResult" class="result">
-        <h3>실행 결과</h3>
+        <h3>🚀 실행 결과</h3>
         <pre>{{ notifierResult }}</pre>
       </div>
     </div>
@@ -126,9 +166,38 @@ class WhippedCreamDecorator extends CoffeeDecorator {
 }</code></pre>
       </div>
 
-      <button @click="testCoffeeDecorator" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <h3>☕ 커피 토핑 선택 및 주문</h3>
+
+        <div class="decorator-selection">
+          <label>토핑 선택 (중복 가능):</label>
+          <button
+            @click="toggleTopping('milk')"
+            :class="['decorator-btn', { active: selectedToppings.includes('milk') }]"
+          >
+            🥛 우유 (+500원)
+          </button>
+          <button
+            @click="toggleTopping('caramel')"
+            :class="['decorator-btn', { active: selectedToppings.includes('caramel') }]"
+          >
+            🍯 카라멜 시럽 (+700원)
+          </button>
+          <button
+            @click="toggleTopping('whipped')"
+            :class="['decorator-btn', { active: selectedToppings.includes('whipped') }]"
+          >
+            🍦 휘핑크림 (+800원)
+          </button>
+        </div>
+
+        <button @click="orderCoffee" class="test-btn">
+          커피 주문 (기본 커피 + 선택된 토핑)
+        </button>
+      </div>
+
       <div v-if="coffeeResult" class="result">
-        <h3>실행 결과</h3>
+        <h3>🚀 실행 결과</h3>
         <pre>{{ coffeeResult }}</pre>
       </div>
     </div>
@@ -202,9 +271,43 @@ class EncryptionDecorator extends StreamDecorator {
 }</code></pre>
       </div>
 
-      <button @click="testStreamDecorator" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <h3>💾 파일 데이터 쓰기/읽기</h3>
+
+        <div class="form-group">
+          <label for="stream-data">데이터:</label>
+          <input
+            id="stream-data"
+            v-model="streamData"
+            type="text"
+            placeholder="예: Sensitive User Data"
+            class="input-field"
+          />
+        </div>
+
+        <div class="decorator-selection">
+          <label>처리 방식 선택 (중복 가능):</label>
+          <button
+            @click="toggleStream('compression')"
+            :class="['decorator-btn', { active: selectedStreams.includes('compression') }]"
+          >
+            🗜️ 압축
+          </button>
+          <button
+            @click="toggleStream('encryption')"
+            :class="['decorator-btn', { active: selectedStreams.includes('encryption') }]"
+          >
+            🔐 암호화
+          </button>
+        </div>
+
+        <button @click="processStream" class="test-btn" :disabled="!streamData">
+          데이터 쓰기 및 읽기
+        </button>
+      </div>
+
       <div v-if="streamResult" class="result">
-        <h3>실행 결과</h3>
+        <h3>🚀 실행 결과</h3>
         <pre>{{ streamResult }}</pre>
       </div>
     </div>
@@ -263,9 +366,49 @@ class LoggingDecorator implements UIComponent {
 }</code></pre>
       </div>
 
-      <button @click="testUIDecorator" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <h3>🎨 UI 컴포넌트 상태 설정</h3>
+
+        <div class="form-group">
+          <label for="button-label">버튼 라벨:</label>
+          <input
+            id="button-label"
+            v-model="buttonLabel"
+            type="text"
+            placeholder="예: 제출"
+            class="input-field"
+          />
+        </div>
+
+        <div class="decorator-selection">
+          <label>컴포넌트 상태:</label>
+          <button
+            @click="uiIsLoading = !uiIsLoading"
+            :class="['decorator-btn', { active: uiIsLoading }]"
+          >
+            ⏳ 로딩 중
+          </button>
+          <button
+            @click="uiHasError = !uiHasError"
+            :class="['decorator-btn', { active: uiHasError }]"
+          >
+            ❌ 에러 발생
+          </button>
+          <button
+            @click="uiWithLogging = !uiWithLogging"
+            :class="['decorator-btn', { active: uiWithLogging }]"
+          >
+            📝 로깅 활성화
+          </button>
+        </div>
+
+        <button @click="renderUI" class="test-btn" :disabled="!buttonLabel">
+          컴포넌트 렌더링
+        </button>
+      </div>
+
       <div v-if="uiResult" class="result">
-        <h3>실행 결과</h3>
+        <h3>🚀 실행 결과</h3>
         <pre>{{ uiResult }}</pre>
       </div>
     </div>
@@ -313,6 +456,21 @@ notifier = new SlackNotifier(notifier)
 <script setup lang="ts">
 import { ref } from 'vue'
 
+// Interactive variables
+const notifierMessage = ref<string>('')
+const selectedNotifiers = ref<string[]>([])
+
+const selectedToppings = ref<string[]>([])
+
+const streamData = ref<string>('')
+const selectedStreams = ref<string[]>([])
+
+const buttonLabel = ref<string>('')
+const uiIsLoading = ref<boolean>(false)
+const uiHasError = ref<boolean>(false)
+const uiWithLogging = ref<boolean>(false)
+
+// Result variables
 const notifierResult = ref<string>('')
 const coffeeResult = ref<string>('')
 const streamResult = ref<string>('')
@@ -356,32 +514,51 @@ class SlackNotifier extends NotifierDecorator {
   }
 }
 
-function testNotifierDecorator() {
-  const message = '긴급 알림: 서버 점검 예정'
+// Interactive functions
+function toggleNotifier(type: string) {
+  const index = selectedNotifiers.value.indexOf(type)
+  if (index > -1) {
+    selectedNotifiers.value.splice(index, 1)
+  } else {
+    selectedNotifiers.value.push(type)
+  }
+}
 
-  // 테스트 1: 기본 알림만
-  let notifier1: Notifier = new BaseNotifier()
-  const result1 = notifier1.send(message)
+function sendNotification() {
+  if (!notifierMessage.value) return
 
-  // 테스트 2: 기본 + 이메일
-  let notifier2: Notifier = new BaseNotifier()
-  notifier2 = new EmailNotifier(notifier2)
-  const result2 = notifier2.send(message)
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = notifierResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
 
-  // 테스트 3: 기본 + 이메일 + SMS
-  let notifier3: Notifier = new BaseNotifier()
-  notifier3 = new EmailNotifier(notifier3)
-  notifier3 = new SmsNotifier(notifier3)
-  const result3 = notifier3.send(message)
+  let notifier: Notifier = new BaseNotifier()
 
-  // 테스트 4: 모든 알림 (기본 + 이메일 + SMS + Slack)
-  let notifier4: Notifier = new BaseNotifier()
-  notifier4 = new EmailNotifier(notifier4)
-  notifier4 = new SmsNotifier(notifier4)
-  notifier4 = new SlackNotifier(notifier4)
-  const result4 = notifier4.send(message)
+  // 선택된 데코레이터 적용
+  if (selectedNotifiers.value.includes('email')) {
+    notifier = new EmailNotifier(notifier)
+  }
+  if (selectedNotifiers.value.includes('sms')) {
+    notifier = new SmsNotifier(notifier)
+  }
+  if (selectedNotifiers.value.includes('slack')) {
+    notifier = new SlackNotifier(notifier)
+  }
 
-  notifierResult.value = `알림 시스템 테스트\n\n테스트 1 - 기본 알림만:\n${result1}\n\n테스트 2 - 기본 + 이메일:\n${result2}\n\n테스트 3 - 기본 + 이메일 + SMS:\n${result3}\n\n테스트 4 - 모든 알림:\n${result4}\n\n동적으로 기능을 조합할 수 있습니다!`
+  const result = notifier.send(notifierMessage.value)
+
+  const channels = ['기본']
+  if (selectedNotifiers.value.includes('email')) channels.push('이메일')
+  if (selectedNotifiers.value.includes('sms')) channels.push('SMS')
+  if (selectedNotifiers.value.includes('slack')) channels.push('Slack')
+
+  notifierResult.value = separator + `[${timestamp}]
+메시지: "${notifierMessage.value}"
+선택된 채널: ${channels.join(' + ')}
+
+실행 결과:
+${result}
+
+✅ 데코레이터 패턴으로 동적으로 알림 채널을 조합했습니다!
+💡 런타임에 기능을 선택적으로 추가할 수 있습니다.`
 }
 
 // ============ B. Coffee Decorator ============
@@ -439,34 +616,46 @@ class WhippedCreamDecorator extends CoffeeDecorator {
   }
 }
 
-function testCoffeeDecorator() {
-  // 테스트 1: 기본 커피
-  let coffee1: Coffee = new SimpleCoffee()
-  const desc1 = coffee1.getDescription()
-  const cost1 = coffee1.getCost()
+function toggleTopping(type: string) {
+  const index = selectedToppings.value.indexOf(type)
+  if (index > -1) {
+    selectedToppings.value.splice(index, 1)
+  } else {
+    selectedToppings.value.push(type)
+  }
+}
 
-  // 테스트 2: 카페라떼 (커피 + 우유)
-  let coffee2: Coffee = new SimpleCoffee()
-  coffee2 = new MilkDecorator(coffee2)
-  const desc2 = coffee2.getDescription()
-  const cost2 = coffee2.getCost()
+function orderCoffee() {
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = coffeeResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
 
-  // 테스트 3: 카라멜 마끼아또 (커피 + 우유 + 카라멜)
-  let coffee3: Coffee = new SimpleCoffee()
-  coffee3 = new MilkDecorator(coffee3)
-  coffee3 = new CaramelDecorator(coffee3)
-  const desc3 = coffee3.getDescription()
-  const cost3 = coffee3.getCost()
+  let coffee: Coffee = new SimpleCoffee()
 
-  // 테스트 4: 프리미엄 커피 (모든 토핑)
-  let coffee4: Coffee = new SimpleCoffee()
-  coffee4 = new MilkDecorator(coffee4)
-  coffee4 = new CaramelDecorator(coffee4)
-  coffee4 = new WhippedCreamDecorator(coffee4)
-  const desc4 = coffee4.getDescription()
-  const cost4 = coffee4.getCost()
+  // 선택된 데코레이터 적용
+  if (selectedToppings.value.includes('milk')) {
+    coffee = new MilkDecorator(coffee)
+  }
+  if (selectedToppings.value.includes('caramel')) {
+    coffee = new CaramelDecorator(coffee)
+  }
+  if (selectedToppings.value.includes('whipped')) {
+    coffee = new WhippedCreamDecorator(coffee)
+  }
 
-  coffeeResult.value = `커피 주문 시스템 테스트\n\n주문 1:\n${desc1}\n가격: ${cost1}원\n\n주문 2:\n${desc2}\n가격: ${cost2}원\n\n주문 3:\n${desc3}\n가격: ${cost3}원\n\n주문 4:\n${desc4}\n가격: ${cost4}원\n\n각 토핑을 조합하여 가격이 계산됩니다!`
+  const description = coffee.getDescription()
+  const cost = coffee.getCost()
+
+  coffeeResult.value = separator + `[${timestamp}]
+주문 내역:
+${description}
+
+총 가격: ${cost.toLocaleString()}원
+
+가격 구성:
+- 기본 커피: 2,000원
+${selectedToppings.value.includes('milk') ? '- 우유: +500원\n' : ''}${selectedToppings.value.includes('caramel') ? '- 카라멜 시럽: +700원\n' : ''}${selectedToppings.value.includes('whipped') ? '- 휘핑크림: +800원\n' : ''}
+✅ 각 데코레이터가 가격과 설명을 추가했습니다!
+💡 새로운 토핑 추가 시 기존 코드 수정 불필요 (OCP 준수)`
 }
 
 // ============ C. Data Stream Decorator ============
@@ -529,34 +718,50 @@ class EncryptionDecorator extends StreamDecorator {
   }
 }
 
-function testStreamDecorator() {
-  const originalData = 'Sensitive User Data'
+function toggleStream(type: string) {
+  const index = selectedStreams.value.indexOf(type)
+  if (index > -1) {
+    selectedStreams.value.splice(index, 1)
+  } else {
+    selectedStreams.value.push(type)
+  }
+}
 
-  // 테스트 1: 기본 파일 스트림
-  let stream1: DataStream = new FileStream()
-  const write1 = stream1.writeData(originalData)
-  const read1 = stream1.readData()
+function processStream() {
+  if (!streamData.value) return
 
-  // 테스트 2: 압축 적용
-  let stream2: DataStream = new FileStream()
-  stream2 = new CompressionDecorator(stream2)
-  const write2 = stream2.writeData(originalData)
-  const read2 = stream2.readData()
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = streamResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
 
-  // 테스트 3: 암호화 적용
-  let stream3: DataStream = new FileStream()
-  stream3 = new EncryptionDecorator(stream3)
-  const write3 = stream3.writeData(originalData)
-  const read3 = stream3.readData()
+  let stream: DataStream = new FileStream()
 
-  // 테스트 4: 압축 + 암호화 (다중 데코레이터)
-  let stream4: DataStream = new FileStream()
-  stream4 = new CompressionDecorator(stream4)
-  stream4 = new EncryptionDecorator(stream4)
-  const write4 = stream4.writeData(originalData)
-  const read4 = stream4.readData()
+  // 선택된 데코레이터 적용
+  if (selectedStreams.value.includes('compression')) {
+    stream = new CompressionDecorator(stream)
+  }
+  if (selectedStreams.value.includes('encryption')) {
+    stream = new EncryptionDecorator(stream)
+  }
 
-  streamResult.value = `파일 스트림 처리 테스트\n원본 데이터: "${originalData}"\n\n테스트 1 - 기본 스트림:\n쓰기: ${write1}\n읽기: ${read1}\n\n테스트 2 - 압축:\n쓰기: ${write2}\n읽기: ${read2}\n\n테스트 3 - 암호화:\n쓰기: ${write3}\n읽기: ${read3}\n\n테스트 4 - 압축 + 암호화:\n쓰기: ${write4}\n읽기: ${read4}\n\n여러 처리를 조합할 수 있습니다!`
+  const writeResult = stream.writeData(streamData.value)
+  const readResult = stream.readData()
+
+  const processes = []
+  if (selectedStreams.value.includes('compression')) processes.push('압축')
+  if (selectedStreams.value.includes('encryption')) processes.push('암호화')
+
+  streamResult.value = separator + `[${timestamp}]
+원본 데이터: "${streamData.value}"
+적용된 처리: ${processes.length > 0 ? processes.join(' + ') : '없음 (기본 스트림)'}
+
+📝 쓰기 작업:
+${writeResult}
+
+📖 읽기 작업:
+읽은 데이터: "${readResult}"
+
+✅ 데코레이터를 조합하여 파일 처리를 했습니다!
+💡 압축과 암호화를 독립적으로 또는 함께 적용 가능`
 }
 
 // ============ D. UI Component Decorator ============
@@ -605,33 +810,41 @@ class LoggingDecorator implements UIComponent {
   }
 }
 
-function testUIDecorator() {
-  // 테스트 1: 기본 버튼
-  let button1: UIComponent = new Button('클릭하세요')
-  const result1 = button1.render()
+function renderUI() {
+  if (!buttonLabel.value) return
 
-  // 테스트 2: 로딩 상태 (false)
-  let button2: UIComponent = new Button('제출')
-  button2 = new LoadingDecorator(button2, false)
-  const result2 = button2.render()
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = uiResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
 
-  // 테스트 3: 로딩 상태 (true)
-  let button3: UIComponent = new Button('제출')
-  button3 = new LoadingDecorator(button3, true)
-  const result3 = button3.render()
+  let component: UIComponent = new Button(buttonLabel.value)
 
-  // 테스트 4: 에러 상태
-  let button4: UIComponent = new Button('저장')
-  button4 = new ErrorBoundaryDecorator(button4, true)
-  const result4 = button4.render()
+  // 선택된 데코레이터 적용 (순서 중요!)
+  if (uiHasError.value) {
+    component = new ErrorBoundaryDecorator(component, true)
+  } else if (uiIsLoading.value) {
+    component = new LoadingDecorator(component, true)
+  }
 
-  // 테스트 5: 로깅 + 에러 경계 (정상)
-  let button5: UIComponent = new Button('삭제')
-  button5 = new ErrorBoundaryDecorator(button5, false)
-  button5 = new LoggingDecorator(button5)
-  const result5 = button5.render()
+  if (uiWithLogging.value) {
+    component = new LoggingDecorator(component)
+  }
 
-  uiResult.value = `UI 컴포넌트 데코레이터 테스트\n\n테스트 1 - 기본 버튼:\n${result1}\n\n테스트 2 - 로딩 false:\n${result2}\n\n테스트 3 - 로딩 true:\n${result3}\n\n테스트 4 - 에러 상태:\n${result4}\n\n테스트 5 - 다중 데코레이터 (로깅 + 에러경계):\n${result5}\n(콘솔에서 로그 확인)\n\nReact HOC와 유사한 패턴입니다!`
+  const rendered = component.render()
+
+  const appliedDecorators = []
+  if (uiHasError.value) appliedDecorators.push('에러 경계')
+  else if (uiIsLoading.value) appliedDecorators.push('로딩')
+  if (uiWithLogging.value) appliedDecorators.push('로깅')
+
+  uiResult.value = separator + `[${timestamp}]
+버튼 라벨: "${buttonLabel.value}"
+적용된 데코레이터: ${appliedDecorators.length > 0 ? appliedDecorators.join(' + ') : '없음 (기본 버튼)'}
+
+렌더링 결과:
+${rendered}
+
+${uiWithLogging.value ? '💡 콘솔 로그도 확인해보세요!\n' : ''}✅ React HOC와 유사한 패턴으로 UI를 감쌌습니다!
+💡 상태에 따라 다른 UI를 렌더링할 수 있습니다.`
 }
 </script>
 

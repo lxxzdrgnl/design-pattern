@@ -34,3 +34,6 @@ coverage
 
 # Vitest
 __screenshots__/
+
+# Claude Code context (작업 진행 상황 - git 추적 제외)
+.claude-context.md

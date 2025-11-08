@@ -873,8 +873,10 @@ class BubbleSort implements SortStrategy {
 
     for (let i = 0; i < n - 1; i++) {
       for (let j = 0; j < n - i - 1; j++) {
-        if (arr[j] > arr[j + 1]) {
-          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+        if (arr[j]! > arr[j + 1]!) {
+          const temp = arr[j]!
+          arr[j] = arr[j + 1]!
+          arr[j + 1] = temp
         }
       }
     }
@@ -890,7 +892,7 @@ class QuickSort implements SortStrategy {
   sort(data: number[]): number[] {
     if (data.length <= 1) return data
 
-    const pivot = data[Math.floor(data.length / 2)]
+    const pivot = data[Math.floor(data.length / 2)]!
     const left = data.filter(x => x < pivot)
     const middle = data.filter(x => x === pivot)
     const right = data.filter(x => x > pivot)
@@ -919,10 +921,10 @@ class MergeSort implements SortStrategy {
     let i = 0, j = 0
 
     while (i < left.length && j < right.length) {
-      if (left[i] < right[j]) {
-        result.push(left[i++])
+      if (left[i]! < right[j]!) {
+        result.push(left[i++]!)
       } else {
-        result.push(right[j++])
+        result.push(right[j++]!)
       }
     }
 
