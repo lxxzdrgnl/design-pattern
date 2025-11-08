@@ -82,7 +82,22 @@ class FileSearcher implements FileVisitor {
 }</code></pre>
       </div>
 
-      <button @click="testFileSystemVisitor" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <div class="form-group">
+          <label for="file-search-term">파일 검색어:</label>
+          <input
+            id="file-search-term"
+            v-model="fileSearchTerm"
+            type="text"
+            class="input-field"
+            placeholder="예: .jpg, photo, report"
+          />
+        </div>
+        <button @click="runFileSystemVisitors" class="test-btn">
+          크기 계산 및 파일 검색 실행
+        </button>
+      </div>
+
       <div v-if="fileSystemResult" class="result">
         <h3>실행 결과</h3>
         <pre>{{ fileSystemResult }}</pre>
@@ -171,7 +186,49 @@ class PerimeterCalculator implements ShapeVisitor {
 }</code></pre>
       </div>
 
-      <button @click="testShapeVisitor" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <h4>도형 속성 입력</h4>
+        <div class="form-group">
+          <label>원 (반지름):</label>
+          <input v-model.number="circleRadius" type="number" class="input-field" />
+        </div>
+        <div class="form-group">
+          <label>사각형 (너비, 높이):</label>
+          <div style="display: flex; gap: 10px">
+            <input
+              v-model.number="rectWidth"
+              type="number"
+              class="input-field"
+              placeholder="너비"
+            />
+            <input
+              v-model.number="rectHeight"
+              type="number"
+              class="input-field"
+              placeholder="높이"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>삼각형 (밑변, 높이):</label>
+          <div style="display: flex; gap: 10px">
+            <input
+              v-model.number="triBase"
+              type="number"
+              class="input-field"
+              placeholder="밑변"
+            />
+            <input
+              v-model.number="triHeight"
+              type="number"
+              class="input-field"
+              placeholder="높이"
+            />
+          </div>
+        </div>
+        <button @click="testShapeVisitor" class="test-btn">면적 및 둘레 계산</button>
+      </div>
+
       <div v-if="shapeResult" class="result">
         <h3>실행 결과</h3>
         <pre>{{ shapeResult }}</pre>
@@ -262,7 +319,23 @@ class TaxCalculator implements ItemVisitor {
 }</code></pre>
       </div>
 
-      <button @click="testShoppingCartVisitor" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <h4>장바구니 상품 가격 입력</h4>
+        <div class="form-group">
+          <label>책 가격:</label>
+          <input v-model.number="bookPrice" type="number" class="input-field" />
+        </div>
+        <div class="form-group">
+          <label>전자제품 가격:</label>
+          <input v-model.number="electronicsPrice" type="number" class="input-field" />
+        </div>
+        <div class="form-group">
+          <label>식품 가격:</label>
+          <input v-model.number="foodPrice" type="number" class="input-field" />
+        </div>
+        <button @click="testShoppingCartVisitor" class="test-btn">할인 및 세금 계산</button>
+      </div>
+
       <div v-if="cartResult" class="result">
         <h3>실행 결과</h3>
         <pre>{{ cartResult }}</pre>
@@ -350,7 +423,23 @@ class VacationCalculator implements EmployeeVisitor {
 }</code></pre>
       </div>
 
-      <button @click="testEmployeeVisitor" class="test-btn">테스트 실행</button>
+      <div class="interactive-demo">
+        <h4>직원 급여 입력</h4>
+        <div class="form-group">
+          <label>매니저 기본급:</label>
+          <input v-model.number="managerSalary" type="number" class="input-field" />
+        </div>
+        <div class="form-group">
+          <label>개발자 기본급:</label>
+          <input v-model.number="developerSalary" type="number" class="input-field" />
+        </div>
+        <div class="form-group">
+          <label>인턴 기본급:</label>
+          <input v-model.number="internSalary" type="number" class="input-field" />
+        </div>
+        <button @click="testEmployeeVisitor" class="test-btn">급여 및 연차 계산</button>
+      </div>
+
       <div v-if="employeeResult" class="result">
         <h3>실행 결과</h3>
         <pre>{{ employeeResult }}</pre>
@@ -422,6 +511,22 @@ const shapeResult = ref<string>('')
 const cartResult = ref<string>('')
 const employeeResult = ref<string>('')
 
+const fileSearchTerm = ref<string>('.jpg')
+
+const circleRadius = ref<number>(5)
+const rectWidth = ref<number>(10)
+const rectHeight = ref<number>(20)
+const triBase = ref<number>(8)
+const triHeight = ref<number>(6)
+
+const bookPrice = ref<number>(30000)
+const electronicsPrice = ref<number>(1500000)
+const foodPrice = ref<number>(5000)
+
+const managerSalary = ref<number>(5000000)
+const developerSalary = ref<number>(4000000)
+const internSalary = ref<number>(2000000)
+
 // ============ A. File System Visitor ============
 
 interface FileVisitor {
@@ -486,7 +591,10 @@ class FileSearcher implements FileVisitor {
   }
 }
 
-function testFileSystemVisitor() {
+function runFileSystemVisitors() {
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = fileSystemResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
   // 파일 시스템 구조 생성
   const root = new FolderElement('root')
   const documents = new FolderElement('documents')
@@ -502,41 +610,30 @@ function testFileSystemVisitor() {
   root.add(new FileElement('readme.txt', 500))
 
   const logs: string[] = []
-  logs.push('=== 파일 시스템 구조 ===')
-  logs.push('root/')
-  logs.push('  documents/')
-  logs.push('    report.pdf (1500KB)')
-  logs.push('    presentation.pptx (3000KB)')
-  logs.push('  pictures/')
-  logs.push('    photo1.jpg (2000KB)')
-  logs.push('    photo2.jpg (2500KB)')
-  logs.push('  readme.txt (500KB)')
-  logs.push('')
 
   // Visitor 1: 전체 크기 계산
   const sizeCalc = new SizeCalculator()
   root.accept(sizeCalc)
-  logs.push(`=== Visitor 1: 크기 계산 ===`)
-  logs.push(`전체 크기: ${sizeCalc.totalSize}KB`)
-  logs.push('')
+  logs.push(`[크기 계산 Visitor]`)
+  logs.push(`- 전체 파일 크기: ${sizeCalc.totalSize}KB`)
 
-  // Visitor 2: 파일 검색 (.jpg)
-  const searcher1 = new FileSearcher('.jpg')
-  root.accept(searcher1)
-  logs.push(`=== Visitor 2: '.jpg' 파일 검색 ===`)
-  logs.push(`찾은 파일: ${searcher1.foundFiles.join(', ')}`)
-  logs.push('')
+  // Visitor 2: 파일 검색
+  const searcher = new FileSearcher(fileSearchTerm.value)
+  root.accept(searcher)
+  logs.push(`\n[파일 검색 Visitor (검색어: "${fileSearchTerm.value}")]`)
+  if (searcher.foundFiles.length > 0) {
+    logs.push(`- 찾은 파일: ${searcher.foundFiles.join(', ')}`)
+  } else {
+    logs.push(`- "${fileSearchTerm.value}" 포함된 파일 없음`)
+  }
 
-  // Visitor 3: 파일 검색 (photo)
-  const searcher2 = new FileSearcher('photo')
-  root.accept(searcher2)
-  logs.push(`=== Visitor 3: 'photo' 포함 파일 검색 ===`)
-  logs.push(`찾은 파일: ${searcher2.foundFiles.join(', ')}`)
-  logs.push('')
+  fileSystemResult.value =
+    separator +
+    `[${timestamp}]
+${logs.join('\n')}
 
-  logs.push('기존 클래스 수정 없이 새로운 연산을 추가했습니다!')
-
-  fileSystemResult.value = logs.join('\n')
+✅ 두 개의 다른 Visitor가 동일한 파일 구조를 방문했습니다.
+💡 Visitor 패턴: 객체 구조(파일 시스템)를 변경하지 않고 새로운 연산(크기 계산, 검색)을 추가할 수 있습니다.`
 }
 
 // ============ B. Shape Visitor ============
@@ -609,40 +706,37 @@ class PerimeterCalculator implements ShapeVisitor {
 }
 
 function testShapeVisitor() {
-  const shapes: Shape[] = [
-    new Circle(5),
-    new Rectangle(10, 20),
-    new Triangle(8, 6)
-  ]
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = shapeResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
+  const shapes: Shape[] = [new Circle(5), new Rectangle(10, 20), new Triangle(8, 6)]
 
   const logs: string[] = []
-  logs.push('=== 도형 목록 ===')
-  logs.push('1. 원 (반지름: 5)')
-  logs.push('2. 직사각형 (가로: 10, 세로: 20)')
-  logs.push('3. 삼각형 (밑변: 8, 높이: 6)')
-  logs.push('')
+  logs.push('도형 목록: 원(r=5), 사각형(10x20), 삼각형(8x6)')
 
   // Visitor 1: 면적 계산
   const areaCalc = new AreaCalculator()
   for (const shape of shapes) {
     shape.accept(areaCalc)
   }
-  logs.push(`=== Visitor 1: 면적 계산 ===`)
-  logs.push(`전체 면적: ${areaCalc.totalArea.toFixed(2)}`)
-  logs.push('')
+  logs.push(`\n[면적 계산 Visitor]`)
+  logs.push(`- 전체 면적: ${areaCalc.totalArea.toFixed(2)}`)
 
   // Visitor 2: 둘레 계산
   const perimCalc = new PerimeterCalculator()
   for (const shape of shapes) {
     shape.accept(perimCalc)
   }
-  logs.push(`=== Visitor 2: 둘레 계산 ===`)
-  logs.push(`전체 둘레: ${perimCalc.totalPerimeter.toFixed(2)}`)
-  logs.push('')
+  logs.push(`\n[둘레 계산 Visitor]`)
+  logs.push(`- 전체 둘레: ${perimCalc.totalPerimeter.toFixed(2)}`)
 
-  logs.push('Shape 클래스들을 수정하지 않고 새로운 계산을 추가했습니다!')
+  shapeResult.value =
+    separator +
+    `[${timestamp}]
+${logs.join('\n')}
 
-  shapeResult.value = logs.join('\n')
+✅ 도형 클래스 수정 없이 두 가지 다른 계산(면적, 둘레)을 수행했습니다.
+💡 Visitor 패턴: 데이터 구조(도형)와 알고리즘(계산)을 분리합니다.`
 }
 
 // ============ C. Shopping Cart Visitor ============
@@ -714,48 +808,47 @@ class TaxCalculator implements ItemVisitor {
 }
 
 function testShoppingCartVisitor() {
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = cartResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
   const cart: Item[] = [
-    new Book('디자인 패턴', 30000),
-    new Electronics('노트북', 1500000),
-    new Food('사과', 5000)
+    new Book('디자인 패턴', bookPrice.value),
+    new Electronics('노트북', electronicsPrice.value),
+    new Food('사과', foodPrice.value)
   ]
 
   const logs: string[] = []
-  logs.push('=== 장바구니 상품 ===')
-  logs.push('1. 디자인 패턴 (책) - 30,000원')
-  logs.push('2. 노트북 (전자제품) - 1,500,000원')
-  logs.push('3. 사과 (식품) - 5,000원')
-  logs.push('')
+  logs.push(
+    `장바구니: 책(${bookPrice.value.toLocaleString()}원), 노트북(${electronicsPrice.value.toLocaleString()}원), 사과(${foodPrice.value.toLocaleString()}원)`
+  )
 
   // Visitor 1: 할인 가격 계산
   const priceCalc = new PriceCalculator()
   for (const item of cart) {
     item.accept(priceCalc)
   }
-  logs.push(`=== Visitor 1: 할인 적용 가격 ===`)
-  logs.push(`책: 10% 할인`)
-  logs.push(`전자제품: 할인 없음`)
-  logs.push(`식품: 5% 할인`)
-  logs.push(`최종 금액: ${priceCalc.total.toLocaleString()}원`)
-  logs.push('')
+  logs.push(`\n[할인 적용 Visitor]`)
+  logs.push(`- 책(10%), 식품(5%) 할인 적용`)
+  logs.push(`- 할인 후 금액: ${priceCalc.total.toLocaleString()}원`)
 
   // Visitor 2: 세금 계산
   const taxCalc = new TaxCalculator()
   for (const item of cart) {
     item.accept(taxCalc)
   }
-  logs.push(`=== Visitor 2: 세금 계산 ===`)
-  logs.push(`책: 면세`)
-  logs.push(`전자제품: 10% 세금`)
-  logs.push(`식품: 5% 세금`)
-  logs.push(`총 세금: ${taxCalc.totalTax.toLocaleString()}원`)
-  logs.push('')
+  logs.push(`\n[세금 계산 Visitor]`)
+  logs.push(`- 책(면세), 전자제품(10%), 식품(5%) 세금 적용`)
+  logs.push(`- 총 세금: ${taxCalc.totalTax.toLocaleString()}원`)
 
-  logs.push(`총 결제 금액: ${(priceCalc.total + taxCalc.totalTax).toLocaleString()}원`)
-  logs.push('')
-  logs.push('상품 클래스 수정 없이 다양한 계산을 추가했습니다!')
+  logs.push(`\n=> 최종 결제 금액: ${(priceCalc.total + taxCalc.totalTax).toLocaleString()}원`)
 
-  cartResult.value = logs.join('\n')
+  cartResult.value =
+    separator +
+    `[${timestamp}]
+${logs.join('\n')}
+
+✅ 상품 클래스 수정 없이 할인과 세금 계산 로직을 각각 적용했습니다.
+💡 Visitor 패턴: 복잡한 계산 규칙을 객체 구조에서 분리하여 관리합니다.`
 }
 
 // ============ D. Employee Visitor ============
@@ -827,48 +920,46 @@ class VacationCalculator implements EmployeeVisitor {
 }
 
 function testEmployeeVisitor() {
+  const timestamp = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  const separator = employeeResult.value ? '\n\n' + '='.repeat(60) + '\n\n' : ''
+
   const employees: Employee[] = [
-    new Manager('김매니저', 5000000),
-    new Developer('이개발', 4000000),
-    new Developer('박개발', 4200000),
-    new Intern('최인턴', 2000000)
+    new Manager('김매니저', managerSalary.value),
+    new Developer('이개발', developerSalary.value),
+    new Developer('박개발', developerSalary.value),
+    new Intern('최인턴', internSalary.value)
   ]
 
   const logs: string[] = []
-  logs.push('=== 직원 목록 ===')
-  logs.push('1. 김매니저 (매니저) - 기본급 5,000,000원')
-  logs.push('2. 이개발 (개발자) - 기본급 4,000,000원')
-  logs.push('3. 박개발 (개발자) - 기본급 4,200,000원')
-  logs.push('4. 최인턴 (인턴) - 기본급 2,000,000원')
-  logs.push('')
+  logs.push(
+    `직원: 매니저(${managerSalary.value.toLocaleString()}원), 개발자(${developerSalary.value.toLocaleString()}원), 개발자(${developerSalary.value.toLocaleString()}원), 인턴(${internSalary.value.toLocaleString()}원)`
+  )
 
   // Visitor 1: 급여 계산
   const salaryCalc = new SalaryCalculator()
   for (const employee of employees) {
     employee.accept(salaryCalc)
   }
-  logs.push(`=== Visitor 1: 급여 계산 (보너스 포함) ===`)
-  logs.push(`매니저: 기본급 + 50% 보너스`)
-  logs.push(`개발자: 기본급 + 20% 보너스`)
-  logs.push(`인턴: 기본급만`)
-  logs.push(`총 급여: ${salaryCalc.totalSalary.toLocaleString()}원`)
-  logs.push('')
+  logs.push(`\n[급여 계산 Visitor]`)
+  logs.push(`- 매니저(x1.5), 개발자(x1.2) 보너스 적용`)
+  logs.push(`- 총 급여: ${salaryCalc.totalSalary.toLocaleString()}원`)
 
   // Visitor 2: 연차 계산
   const vacationCalc = new VacationCalculator()
   for (const employee of employees) {
     employee.accept(vacationCalc)
   }
-  logs.push(`=== Visitor 2: 연차 일수 계산 ===`)
-  logs.push(`매니저: 20일`)
-  logs.push(`개발자: 15일`)
-  logs.push(`인턴: 10일`)
-  logs.push(`총 연차: ${vacationCalc.totalDays}일`)
-  logs.push('')
+  logs.push(`\n[연차 계산 Visitor]`)
+  logs.push(`- 매니저(20일), 개발자(15일), 인턴(10일)`)
+  logs.push(`- 총 연차: ${vacationCalc.totalDays}일`)
 
-  logs.push('Employee 클래스 수정 없이 새로운 계산을 추가했습니다!')
+  employeeResult.value =
+    separator +
+    `[${timestamp}]
+${logs.join('\n')}
 
-  employeeResult.value = logs.join('\n')
+✅ 직원 클래스 수정 없이 급여와 연차 계산 로직을 분리하여 실행했습니다.
+💡 Visitor 패턴: 다양한 객체 타입에 대한 연산을 중앙에서 관리합니다.`
 }
 </script>
 
